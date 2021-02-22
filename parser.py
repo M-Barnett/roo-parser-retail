@@ -35,13 +35,13 @@ def restaurant_finder(location):
 
     return href_links
 
-def restaurant_checker(word, href_links):
-    """ Function to check if the word is in each restaurant's page """
+def restaurant_checker(first_word, second_word, href_links):
+    """ Function to check if the words are in each restaurant's page """
     # create a dictionary to contain the restaurant and boolean
     restaurant_data = []
     
     # loop over the list of restaurant pages
-    for link in href_links[0:10]: # change/remove indices to parse more restaurants
+    for link in href_links[0:20]: # change/remove indices to parse more restaurants
         # need to convert and extract info from links
         restaurant_dictionary = {'Name' : [], 'Sale' : [], 'URL' : [], 'Location' : []}
         restaurant_url = str(link['href'])
@@ -60,13 +60,18 @@ def restaurant_checker(word, href_links):
         print("Text found for " + restaurant_name)
         
         # check if the text of the restaurant's page contains the word we want
-        page_check = text_checker(word, restaurant_text) 
-        # add the restaurant name and boolean to the dictionary
-        restaurant_dictionary['Name'] = restaurant_name
-        restaurant_dictionary['Sale'] = page_check
-        restaurant_dictionary['URL'] = total_url
-        restaurant_dictionary['Location'] = restaurant_location
-        restaurant_data.append(restaurant_dictionary)
+        page_check = text_checker(first_word, restaurant_text)
+        retail_check = text_checker(second_word, restaurant_text)  
+        # add the restaurant name and boolean to the dictionary only if retail
+        if retail_check:
+                restaurant_dictionary['Name'] = restaurant_name
+                restaurant_dictionary['Sale'] = page_check
+                restaurant_dictionary['URL'] = total_url
+                restaurant_dictionary['Location'] = restaurant_location
+                restaurant_data.append(restaurant_dictionary)
+                print("... RETAIL!")
+        else:
+                print("... but that's not retail.")
 
     return restaurant_data
 
@@ -97,9 +102,9 @@ def csv_generator(restaurant_data, csv_name):
 
 ############### Run Management #####################
 
-def io_printer(test_word, location_choice, csv_name):
+def io_printer(test_word, other_test_word,  location_choice, csv_name):
     """ Function to neatly print io statements """
-    print("Searching for \"" + test_word + "\"...")
+    print("Searching for \"" + test_word + "\" and \"" + other_test_word + "\"...")
     print("Searching in \"" + location_choice + "\"...")
     print("Output will be stored in " + csv_name + "...\n")
     return
@@ -111,43 +116,44 @@ def main():
     # IO Stuff
     # default values for test_word and csv_name
     test_word = "T&Cs apply"
+    other_test_word = "Grocery"
     location_choice = "london/bexleyheath"
     csv_name = "restaurant_test.csv"
 
 
     if len(sys.argv) == 1:
         print("Default option selected...")
-        io_printer(test_word, location_choice, csv_name)
+        io_printer(test_word, other_test_word, location_choice, csv_name)
     elif len(sys.argv) == 2:
         try:
             location_choice = str(sys.argv[1])
             print("Custom option selected...")
-            io_printer(test_word, location_choice, csv_name)
+            io_printer(test_word, other_test_word, location_choice, csv_name)
         except:
             print("Something was wrong with your input, proceeding with default...")
             print("Default option selected...")
-            io_printer(test_word, location_choice, csv_name) 
+            io_printer(test_word, other_test_word, location_choice, csv_name) 
     elif len(sys.argv) == 3:
         try:
             location_choice = str(sys.argv[1])
             csv_name = str(sys.argv[2]) + ".csv"
-            io_printer(test_word, location_choice, csv_name)
+            io_printer(test_word, other_test_word, location_choice, csv_name)
         except:
             print("Something was wrong with your input, proceeding with default")
             print("Default option selected...")
-            io_printer(test_word, location_choice, csv_name)
+            io_printer(test_word, other_test_word, location_choice, csv_name)
     else:
         print("Something is wrong with your input, proceeding with default")
         print("Default option selected...")
-        io_printer(test_word, location_choice, csv_name)
+        io_printer(test_word, other_test_word, location_choice, csv_name)
 
     # Running the Functions
     restaurant_html = restaurant_finder(location_choice)
-    restaurant_data = restaurant_checker(test_word, restaurant_html)
+    restaurant_data = restaurant_checker(test_word, other_test_word, restaurant_html)
     csv_generator(restaurant_data, csv_name)
  
     # loop over resulting dictionary and print values to check output
-#    print("\nResults of search for " + test_word.lower() + ": ")
+#    print("\nResults of search for " + test_word.lower() + " and " + other_test_word.lower() + ": ")
 #    for item in restaurant_data:
 #        print(item)
 
