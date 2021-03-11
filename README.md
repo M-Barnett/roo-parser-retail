@@ -37,6 +37,8 @@ form of the url, so examples would be:
 * for all London restaurant locations you would use `london`
 * for more specific options could do `london/bexleyheath` or `aberdeen/hazelhead`
 </br>
+_N.B.2_ If you are doing a non-london location you may also need to change the res_pattern on line 50 (as of March 11)
+</br>
 
 **CSV Name**</br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Comand: `python parser.py $LOCATION $CSV_NAME`</br>
@@ -64,5 +66,6 @@ fields where Sale is a boolean displaying whether or not a given restaurant is
 running a sale. 
 
 ## Next Steps
+* Make it so locations can be outside london without code modification
 * Add flagging for arguments so `$CSV_NAME`can be specified without `$LOCATION`
 * Potentially make multiple locations write to different csv pages
